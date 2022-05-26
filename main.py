@@ -1,29 +1,26 @@
 import pygame
 
-color = (255, 0, 0)
-
 level1 = [
     " #  #  # #",
-    "     *    ",
+    "  #   #   ",
     "  #     # ",
-    "          ",
+    "     ##   ",
     "    #     ",
     "          ",
     "    #     ",
     "          ",
-    "       #  ",
+    "   &   #  ",
     "          ",
 ]
 
 
 class Player:
 
-    def __init__(self, x, y, width_player, height_player, color_player):
+    def __init__(self, x, y, width_player, height_player, ):
         self.x = x
         self.y = y
         self.width = width_player
         self.height = height_player
-        self.color = color_player
 
     def move(self):
 
@@ -69,7 +66,7 @@ class GenerateLevel:
                     window.blit(box, (self.coord_x, self.coord_y))
 
                 if self.level[y][x] == "&":
-                    pass
+                    window.blit(person, (player.x, player.y))
 
     def get_coord_wall(self):
         lst = []
@@ -81,17 +78,27 @@ class GenerateLevel:
                     lst.append((self.coord_x, self.coord_y))
         return lst
 
+    def get_coord_player(self):
+        lst = []
+        for x in range(len(self.level)):
+            for y in range(len(self.level[x])):
+                self.coord_x = x * 40
+                self.coord_y = y * 40
+                if self.level[y][x] == "&":
+                    lst.append((self.coord_x, self.coord_y))
+        return lst
+
 
 lvl1 = GenerateLevel(level1)
 
-player = Player(40, 0, 40, 40, color)
+player = Player(lvl1.get_coord_player()[0][0], lvl1.get_coord_player()[0][1], 40, 40)
 
 pygame.init()
 screen_stat = {'width': 10, 'height': 10, 'tile': 40}
 fps = 30
 title = 'Sokoban game'
 
-color = (255, 0, 0)
+
 black = (0, 0, 0)
 display = (screen_stat['width']*screen_stat['tile'], screen_stat['height']*screen_stat['tile'])
 window = pygame.display.set_mode(display)
@@ -112,7 +119,7 @@ clock = pygame.time.Clock()
 
 
 speed = player.width
-print(lvl1.get_coord_wall())
+
 
 run = True
 while run:
@@ -127,8 +134,6 @@ while run:
     window.fill((135, 206, 250))
 
     lvl1.get_lvl()
-
-    pygame.draw.rect(window, player.color, (player.x, player.y, player.width, player.height))
 
     pygame.display.update()
 pygame.quit()
