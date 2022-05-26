@@ -3,15 +3,15 @@ import pygame
 color = (255, 0, 0)
 
 level1 = [
+    " #  #  # #",
+    "     *    ",
+    "  #     # ",
     "          ",
+    "    #     ",
+    "          ",
+    "    #     ",
     "          ",
     "       #  ",
-    "          ",
-    "          ",
-    "          ",
-    "          ",
-    "          ",
-    "          ",
     "          ",
 ]
 
@@ -26,18 +26,26 @@ class Player:
         self.color = color_player
 
     def move(self):
+
+        lst = lvl1.get_coord_wall()
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w and self.y > 0:
                 self.y -= speed
-
+                if (self.x, self.y) in lst:
+                    self.y += speed
             if event.key == pygame.K_s and self.y < screen_stat['width'] * screen_stat['tile'] - self.width:
                 self.y += speed
-
+                if (self.x, self.y) in lst:
+                    self.y -= speed
             if event.key == pygame.K_d and self.x < screen_stat['height'] * screen_stat['tile'] - self.height:
                 self.x += speed
-
+                if (self.x, self.y) in lst:
+                    self.x -= speed
             if event.key == pygame.K_a and self.x > 0:
                 self.x -= speed
+                if (self.x, self.y) in lst:
+                    self.x += speed
 
 
 class GenerateLevel:
@@ -63,11 +71,15 @@ class GenerateLevel:
                 if self.level[y][x] == "&":
                     pass
 
-    def get_coord(self):
-        pass
-
-
-
+    def get_coord_wall(self):
+        lst = []
+        for x in range(len(self.level)):
+            for y in range(len(self.level[x])):
+                self.coord_x = x * screen_stat['tile']
+                self.coord_y = y * screen_stat['tile']
+                if self.level[y][x] == "#":
+                    lst.append((self.coord_x, self.coord_y))
+        return lst
 
 
 lvl1 = GenerateLevel(level1)
@@ -100,10 +112,12 @@ clock = pygame.time.Clock()
 
 
 speed = player.width
+print(lvl1.get_coord_wall())
 
 run = True
 while run:
     clock.tick(fps)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
