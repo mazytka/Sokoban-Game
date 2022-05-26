@@ -4,6 +4,7 @@ pygame.init()
 
 width = 800
 height = 640
+tile = 48
 fps = 30
 title = 'Sokoban game'
 
