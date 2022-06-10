@@ -14,15 +14,14 @@ level1 = [
 ]
 
 
-
-class MoveBox():
+class MoveBox:
 
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def move(self):
-        box_lst = []
+
         lst = lvl1.get_coord_wall()
         lst1 = lvl1.get_coord_box()
 
@@ -37,9 +36,7 @@ class MoveBox():
                     self.y -= speed
 
                 if (self.x, self.y) in lst1:
-                    box_lst.append((self.x, self.y))
-                    print(box_lst)
-
+                    pass
 
             elif event.key == pygame.K_d and self.x < screen_stat['height'] * screen_stat['tile'] - player.height:
                 self.x += speed
@@ -64,20 +61,19 @@ class Player(pygame.sprite.Sprite, MoveBox):
 
 class Box(pygame.sprite.Sprite, MoveBox):
 
-    def __init__(self, lst):
+    def __init__(self):
         super().__init__()
-        self.lst = lst
         self.image = pygame.transform.scale(pygame.image.load('png/box.png'), (40, 40))
+        self.rect = self.image.get_rect()
+        self.boxes = pygame.sprite.Group()
 
-    def revove(self):
-        print(self.lst)
 
-class Wall(pygame.surface.Surface):
+class Wall(pygame.sprite.Sprite):
 
     def __init__(self):
-
-        pygame.surface.Surface.__init__(self, (40, 40))
+        super().__init__()
         self.image = pygame.transform.scale(pygame.image.load('png/wall.png'), (40, 40))
+        self.rect = self.image.get_rect()
 
 
 class GenerateLevel:
@@ -89,9 +85,6 @@ class GenerateLevel:
 
     def get_lvl(self):
 
-        self.box = pygame.sprite.Group()
-        self.player = pygame.sprite.GroupSingle()
-
         for x in range(len(self.level)):
             for y in range(len(self.level[x])):
                 self.coord_x = x * screen_stat['tile']
@@ -102,7 +95,6 @@ class GenerateLevel:
 
                 if self.level[y][x] == "*":
                     window.blit(box.image, (self.coord_x, self.coord_y))
-                    self.box.add(box)
 
                 if self.level[y][x] == "&":
                     window.blit(player.image, (player.x, player.y))
@@ -135,21 +127,18 @@ class GenerateLevel:
                 self.coord_y = y * 40
                 if self.level[y][x] == "*":
                     lst.append((self.coord_x, self.coord_y))
+        print(lst)
         return lst
 
     def collision(self):
-        player = self.player.sprite
-        player.rect.x += speed
-        for sprite in self.box.sprites():
-            if sprite.rect.colliderect(player.rect):
-                print('gre')
+        pass
 
 
 lvl1 = GenerateLevel(level1)
 
 player = Player(lvl1.get_coord_player()[0][0], lvl1.get_coord_player()[0][1], 40, 40)
-box = Box(lvl1.get_coord_box())
-print(lvl1.get_coord_box()[0][0], lvl1.get_coord_box()[0][1])
+box = Box()
+
 wall = Wall()
 pygame.init()
 screen_stat = {'width': 10, 'height': 10, 'tile': 40}
@@ -162,17 +151,12 @@ window = pygame.display.set_mode(display)
 
 pygame.display.set_caption(title)
 
-
-
-
-
-
-
 clock = pygame.time.Clock()
 
 speed = player.width
-
+lvl1.get_lvl()
 run = True
+
 while run:
     clock.tick(fps)
 
@@ -182,10 +166,6 @@ while run:
 
         player.move()
 
-
     window.fill((135, 206, 250))
-
-    lvl1.get_lvl()
-
     pygame.display.update()
 pygame.quit()
