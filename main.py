@@ -1,4 +1,4 @@
-import pygame
+import pygame, sys
 
 level1 = [
     " #  #  # #",
@@ -127,7 +127,7 @@ class GenerateLevel:
                 self.coord_y = y * 40
                 if self.level[y][x] == "*":
                     lst.append((self.coord_x, self.coord_y))
-        print(lst)
+
         return lst
 
     def collision(self):
@@ -154,7 +154,7 @@ pygame.display.set_caption(title)
 clock = pygame.time.Clock()
 
 speed = player.width
-lvl1.get_lvl()
+
 run = True
 
 while run:
@@ -167,5 +167,7 @@ while run:
         player.move()
 
     window.fill((135, 206, 250))
+    lvl1.get_lvl()
     pygame.display.update()
+
 pygame.quit()
